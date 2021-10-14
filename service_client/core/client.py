@@ -142,22 +142,22 @@ class BaseClientAPI(object):
         else:
             return current_client_api_instance
 
-    def get(self, url: t.Text, **kwargs: t.Any) -> t.Any:
+    def _get(self, url: t.Text, **kwargs: t.Any) -> t.Any:
         hasattr(self, 'base_url') and kwargs.update({'base_url': self.base_url})
         return self.client.get(url, **kwargs)
 
-    def post(self, url, **kwargs) -> t.Any:
+    def _post(self, url, **kwargs) -> t.Any:
         hasattr(self, 'base_url') and kwargs.update({'base_url': self.base_url})
         return self.client.post(url, **kwargs)
 
-    def put(self, url, **kwargs) -> t.Any:
+    def _put(self, url, **kwargs) -> t.Any:
         hasattr(self, 'base_url') and kwargs.update({'base_url': self.base_url})
         return self.client.put(url, **kwargs)
 
-    def patch(self, url, **kwargs) -> t.Any:
+    def _patch(self, url, **kwargs) -> t.Any:
         hasattr(self, 'base_url') and kwargs.update({'base_url': self.base_url})
         return self.client.patch(url, **kwargs)
 
-    def delete(self, url, **kwargs) -> t.Any:
+    def _delete(self, url, **kwargs) -> t.Any:
         hasattr(self, 'base_url') and kwargs.update({'base_url': self.base_url})
         return self.client.delete(url, **kwargs)
