@@ -10,7 +10,6 @@ import typing as t
 from http import HTTPStatus
 from logging import getLogger
 from inspect import getmembers
-from urllib.parse import urlencode
 from service_green.core.green import urllib3
 from service_client.exception import ClientError
 
@@ -87,9 +86,6 @@ class BaseClient(object):
         :param kwargs: 请求参数
         :return: t.Any
         """
-        # https://urllib3.readthedocs.io/en/stable/user-guide.html#query-parameters
-        if method.upper() in ('POST', 'PUT'):
-            url = f'{url}?{urlencode(kwargs.pop("fields", {}))}'
         if 'timeout' not in kwargs:
             kwargs['timeout'] = 30.0
         if 'headers' not in kwargs:
