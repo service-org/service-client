@@ -143,22 +143,26 @@ class BaseClientAPI(object):
         else:
             return current_client_api_instance
 
+    @property
+    def _base_url(self) -> t.Text:
+        return self.base_url if hasattr(self, 'base_url') else self.client.base_url
+
     def _get(self, url: t.Text, **kwargs: t.Any) -> t.Any:
         hasattr(self, 'base_url') and kwargs.update({'base_url': self.base_url})
         return self.client.get(url, **kwargs)
 
-    def _post(self, url: t.Text, **kwargs) -> t.Any:
+    def _post(self, url: t.Text, **kwargs: t.Any) -> t.Any:
         hasattr(self, 'base_url') and kwargs.update({'base_url': self.base_url})
         return self.client.post(url, **kwargs)
 
-    def _put(self, url: t.Text, **kwargs) -> t.Any:
+    def _put(self, url: t.Text, **kwargs: t.Any) -> t.Any:
         hasattr(self, 'base_url') and kwargs.update({'base_url': self.base_url})
         return self.client.put(url, **kwargs)
 
-    def _patch(self, url: t.Text, **kwargs) -> t.Any:
+    def _patch(self, url: t.Text, **kwargs: t.Any) -> t.Any:
         hasattr(self, 'base_url') and kwargs.update({'base_url': self.base_url})
         return self.client.patch(url, **kwargs)
 
-    def _delete(self, url: t.Text, **kwargs) -> t.Any:
+    def _delete(self, url: t.Text, **kwargs: t.Any) -> t.Any:
         hasattr(self, 'base_url') and kwargs.update({'base_url': self.base_url})
         return self.client.delete(url, **kwargs)
