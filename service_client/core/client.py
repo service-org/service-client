@@ -37,6 +37,7 @@ class BaseClient(object):
         else:
             self.base_url = base_url
         req_logger = getLogger('urllib3')
+        pool_options = pool_options or {}
         debug and req_logger.setLevel(level=logging.DEBUG)
         self.http = urllib3.PoolManager(**pool_options)
 
