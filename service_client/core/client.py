@@ -41,7 +41,7 @@ class BaseClient(object):
         self.http = urllib3.PoolManager(**pool_options)
 
     def __new__(cls, *args: t.Any, **kwargs: t.Any) -> BaseClient:
-        """ 创建接口实例
+        """ 创建客户端实例
 
         @param args  : 位置参数
         @param kwargs: 命名参数
