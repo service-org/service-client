@@ -49,12 +49,26 @@ class BaseClient(object):
         instance = super(BaseClient, cls).__new__(cls)
         curr_client_instance = instance
         is_client_api = lambda o: isinstance(o, BaseClientAPI)
+
+        def bind_sub_apis(client_api: BaseClientAPI) -> None:
+            """ 绑定接口下的接口
+
+            @param client_api: 客户端API对象
+            @return: None
+            """
+            all_sub_apis = getmembers(client_api, predicate=is_client_api)
+            for sub_api_name, sub_api in all_sub_apis:
+                sub_api.client = client_api.client
+                setattr(client_api, sub_api_name, sub_api)
+                bind_sub_apis(sub_api)
+
         # 获取当前类中为BaseClientAPI实例的类属性
         all_apis = getmembers(cls, predicate=is_client_api)
         for name, api in all_apis:
             # 向子API实例传递客户端CLIENT实例
             api.client = instance
             setattr(instance, name, api)
+            bind_sub_apis(api)
         else:
             return curr_client_instance
 
@@ -111,33 +125,12 @@ class BaseClient(object):
 class BaseClientAPI(object):
     """ 客户端接口基类 """
 
-    def __init__(
-            self,
-            client: t.Optional[BaseClient] = None
-    ) -> None:
+    def __init__(self, client: t.Optional[BaseClient] = None) -> None:
         """ 初始化实例
 
         @param client: 客户端
         """
         self.client = client
-
-    def __new__(cls, *args: t.Any, **kwargs: t.Any) -> BaseClientAPI:
-        """ 创建接口实例
-
-        @param args  : 位置参数
-        @param kwargs: 接口参数
-        """
-        instance = super(BaseClientAPI, cls).__new__(cls)
-        current_client_api_instance = instance
-        is_client_api = lambda o: isinstance(o, BaseClientAPI)
-        # 获取当前类中为BaseClientAPI实例的类属性
-        all_apis = getmembers(cls, predicate=is_client_api)
-        for name, api in all_apis:
-            # 向子API实例传递客户端CLIENT实例
-            api.client = instance.client
-            setattr(instance, name, api)
-        else:
-            return current_client_api_instance
 
     @property
     def _base_url(self) -> t.Text:
