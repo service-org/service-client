@@ -31,13 +31,12 @@ class BaseClient(object):
         @param debug: 开启调试?
         @param pool_options: 池配置
         """
+        self.debug = debug
         if base_url.endswith('/'):
             self.base_url = base_url.rstrip('/')
         else:
             self.base_url = base_url
-        req_logger = getLogger('urllib3')
         pool_options = pool_options or {}
-        debug and req_logger.setLevel(level=logging.DEBUG)
         self.http = urllib3.PoolManager(**pool_options)
 
     def __new__(cls, *args: t.Any, **kwargs: t.Any) -> BaseClient:
@@ -112,13 +111,14 @@ class BaseClient(object):
             base_url = self.base_url
         req_url = url if url.startswith(('http', 'https')) else f'{base_url}{url}'
         rsp = self.http.request(method, req_url, **kwargs)
+        data = rsp.data.decode('utf-8')
+        self.debug and logger.debug(f'{method} {req_url} with {kwargs}, resp={data}')
         if (
                 HTTPStatus.OK.value
                 <= rsp.status <
                 HTTPStatus.MULTIPLE_CHOICES.value
         ):
             return rsp
-        data = rsp.data.decode('utf-8')
         raise ClientError(data, original=req_url)
 
 
